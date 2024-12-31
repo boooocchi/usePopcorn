@@ -17,23 +17,37 @@ const textStyle = {
 
 export default function StarRating({ maxRating = 5 }) {
   const [rating, setRating] = React.useState(0);
-  const ratingFn = (num) => {
+  const [tempRating, setTempRating] = React.useState(0);
+  const handleRating = (num) => {
     setRating(num);
+  };
+  const handleHover = (num) => {
+    setTempRating(num);
+  };
+  const handleMouseLeave = () => {
+    setTempRating(0);
   };
 
   return (
     <div style={containerStyle}>
       <div style={startContainerStyle}>
         {Array.from({ length: maxRating }, (_, i) => (
-          <Star key={i} onRate={() => ratingFn(i + 1)} full={i < rating} />
+          <Star
+            key={i}
+            onRate={() => handleRating(i + 1)}
+            full={tempRating ? i < tempRating : i < rating}
+            tempRating={tempRating}
+            onHover={() => handleHover(i + 1)}
+            onMouseLeave={handleMouseLeave}
+          />
         ))}
       </div>
-      <p style={textStyle}>{rating || ""}</p>
+      <p style={textStyle}>{tempRating || rating || ""}</p>
     </div>
   );
 }
 
-function Star({ onRate, full }) {
+function Star({ onRate, full, onHover, onMouseLeave }) {
   return (
     <span
       role="button"
@@ -43,6 +57,8 @@ function Star({ onRate, full }) {
         display: "block",
         cursor: "pointer"
       }}
+      onMouseEnter={onHover}
+      onMouseLeave={onMouseLeave}
       onClick={onRate}
     >
       {full ? (
