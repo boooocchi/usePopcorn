@@ -13,7 +13,10 @@ const startContainerStyle = {
 export default function StarRating({
   maxRating = 5,
   color = "#fcc419",
-  size = "48"
+  size = "48",
+  messages = [],
+  defaultRating = 0,
+  onSetRating = () => {}
 }) {
   const textStyle = {
     lineHeight: "1",
@@ -22,10 +25,11 @@ export default function StarRating({
     fontSize: `${size / 2}px`
   };
 
-  const [rating, setRating] = React.useState(0);
+  const [rating, setRating] = React.useState(defaultRating);
   const [tempRating, setTempRating] = React.useState(0);
   const handleRating = (num) => {
     setRating(num);
+    onSetRating(num);
   };
   const handleHover = (num) => {
     setTempRating(num);
@@ -50,7 +54,11 @@ export default function StarRating({
           />
         ))}
       </div>
-      <p style={textStyle}>{tempRating || rating || ""}</p>
+      <p style={textStyle}>
+        {messages.length === maxRating
+          ? messages[tempRating ? tempRating - 1 : rating - 1]
+          : tempRating || rating || ""}
+      </p>
     </div>
   );
 }
